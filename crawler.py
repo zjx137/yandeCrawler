@@ -3,6 +3,7 @@ import requests
 import urllib
 import re
 import os
+from multiprocessing import Pool
 
 def getHtml(url):
     headers = {
@@ -50,6 +51,29 @@ def downloadImg(folder_path, lists):
             except Exception as e:
                 print("Error occurred when downloading file, error message:")
                 print(e)
+
+def downloadImg_Pool(folder_path, lists):
+    if not os.path.exists(folder_path):
+        print("选定的文件夹不存在，帮你先创一个。")
+        os.makedirs(folder_path) 
+    pool = Pool(10)
+    for item in lists:
+        pool.apply_async(downloadSingleImg,(folder_path,item,))
+    pool.close()
+    pool.join()
+
+def downloadSingleImg(folder_path, url):
+    print("正在下载Pic: {}".format(url))
+    filename = url.split('/')[-1]
+    filepath = folder_path + '/' + filename   
+    if os.path.exists(filepath):
+        print("文件已存在 ，咱换！！")
+    else:
+        try:
+            urllib.request.urlretrieve(url, filename=filepath)
+        except Exception as e:
+            print("Error occurred when downloading file, error message:")
+            print(e)    
 
 
 def Schedule(blocknum,blocksize,totalsize):
