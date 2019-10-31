@@ -21,7 +21,7 @@ Windows
 ## 需求
 - python 3.4
 - BeautifulSoup
-
+- multithreading
 ```python
 pip3 install Beautifulsoup4 
 ```
